@@ -37,27 +37,22 @@ jobs:
         mvn versions:set -DnewVersion=${GITHUB_REF_NAME} -DgenerateBackupPoms=false
         echo "Set artifact version to: ${GITHUB_REF_NAME}"
 
-    - name: Display some stuff for debugging
-      run: |
-        echo ">>> settings.xml:"
-        cat ~/.m2/settings.xml
-        echo ">>> pom.xml:"
-        cat pom.xml
-
     - name: Publish javadocs to Github Pages
-      run: |
-        mvn clean javadoc:javadoc
-        build/publishJavadoc-ghactions.sh
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        GH_REPO_SLUG: ${{ github.repository }}
+        GH_TAG: ${{ github.ref_name}}
+      run: |
+        mvn clean javadoc:javadoc
+        build/publishJavadoc-gha.sh
 
     - name: Publish artifacts to Maven Central
-      run: |
-        echo "Publishing to maven central using username: ${MAVEN_USERNAME}"
-        # build only the "sign" goal for now until we're brave enough to try to deploy to MC :)
-        mvn -B sign
       env:
         MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      run: |
+        echo "Publishing to maven central using username: ${MAVEN_USERNAME}"
+        # build only the "verify" goal for now until we're brave enough to try to deploy to MC :)
+        mvn -B verify
