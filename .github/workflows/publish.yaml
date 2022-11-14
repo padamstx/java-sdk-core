@@ -52,12 +52,12 @@ jobs:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     - name: Publish artifacts to Maven Central
+      run: |
+        echo "Publishing to maven central using username: ${MAVEN_USERNAME}"
+        # build only the "sign" goal for now until we're brave enough to try to deploy to MC :)
+        mvn -B sign
       env:
         MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      run: |
-        echo "Publishing to maven central using username: ${MAVEN_USERNAME}"
-        # build only the "sign" goal for now until we're brave enough to try to deploy to MC :)
-        mvn -B sign
