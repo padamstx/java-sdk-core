@@ -72,7 +72,6 @@ jobs:
         pip install --user bump2version
 
     - name: Create & Tag Release
-      if: ${{ github.event.workflow_run.conclusion == 'success' }}
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: npx semantic-release
