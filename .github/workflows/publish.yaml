@@ -53,6 +53,7 @@ jobs:
         GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       run: |
-        echo "Publishing to maven central using username: ${MAVEN_USERNAME}"
+        echo "Publishing to maven central"
         # build only the "verify" goal for now until we're brave enough to try to deploy to MC :)
         mvn verify -B -DskipTests -P central
+        ls -al target
