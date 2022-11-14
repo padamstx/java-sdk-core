@@ -43,7 +43,7 @@ jobs:
         GH_REPO_SLUG: ${{ github.repository }}
         GH_TAG: ${{ github.ref_name}}
       run: |
-        mvn clean javadoc:javadoc
+        mvn clean javadoc:javadoc -B
         build/publishJavadoc-gha.sh
 
     - name: Publish artifacts to Maven Central
@@ -55,4 +55,4 @@ jobs:
       run: |
         echo "Publishing to maven central using username: ${MAVEN_USERNAME}"
         # build only the "verify" goal for now until we're brave enough to try to deploy to MC :)
-        mvn -B verify
+        mvn verify -B -DskipTests -P central
