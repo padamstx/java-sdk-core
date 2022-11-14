@@ -1,3 +1,10 @@
+## [9.18.1](https://github.com/padamstx/java-sdk-core/compare/9.18.0...9.18.1) (2022-11-14)
+
+
+### Bug Fixes
+
+* address javadoc publishing errors ([3eb0023](https://github.com/padamstx/java-sdk-core/commit/3eb00238d9cf73c82417131943bb98bf7fa812e6))
+
 # [9.18.0](https://github.com/padamstx/java-sdk-core/compare/9.17.4...9.18.0) (2022-11-14)
 
 
