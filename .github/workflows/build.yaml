@@ -1,0 +1,78 @@
+# This workflow will build and unit test the project.
+# If the workflow is running on the "main" branch, then
+# semantic-release is also run to create a new release *if
+# warranted by the new commits being built).
+
+name: Build & Test
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+  workflow_dispatch:
+    # Allow workflow to be triggered manually.
+
+jobs:
+  build:
+    name: Build & Test (Java ${{matrix.java-version}})
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: ['8', '11']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Java ${{matrix.java-version}}
+      uses: actions/setup-java@v3 
+      with:
+        java-version: ${{matrix.java-version}}
+        distribution: 'adopt'
+        cache: 'maven'
+
+    - name: Build & Unit Test w/Maven
+      # temporarily skip tests to speed up builds while working on ghactions
+      run: mvn -B clean package -DskipTests
+
+  create_release:
+    name: Create Release
+    needs: build
+    if: "github.ref_name == 'main'"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: ['8']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+
+    - name: Setup node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 14
+
+    - name: Set up python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+
+    - name: Install semantic-release 
+      run: |
+        npm install -g semantic-release
+        npm install -g @semantic-release/changelog
+        npm install -g @semantic-release/exec
+        npm install -g @semantic-release/git
+        npm install -g @semantic-release/github
+        npm install -g @semantic-release/commit-analyzer
+        pip install --user bump2version
+
+    - name: Create & Tag Release
+      if: ${{ github.event.workflow_run.conclusion == 'success' }}
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: npx semantic-release
