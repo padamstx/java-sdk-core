@@ -1,3 +1,10 @@
+## [9.18.2](https://github.com/padamstx/java-sdk-core/compare/9.18.1...9.18.2) (2022-11-14)
+
+
+### Bug Fixes
+
+* use correct maven profile for deploy step ([3ab63b8](https://github.com/padamstx/java-sdk-core/commit/3ab63b85f0ef4945ad480e42f5d4095285b2b76f))
+
 ## [9.18.1](https://github.com/padamstx/java-sdk-core/compare/9.18.0...9.18.1) (2022-11-14)
 
 
