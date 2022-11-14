@@ -3,7 +3,7 @@
 # semantic-release is also run to create a new release *if
 # warranted by the new commits being built).
 
-name: Build & Test
+name: Build
 
 on:
   push:
@@ -38,8 +38,8 @@ jobs:
       run: mvn -B clean package -DskipTests
 
   create_release:
-    name: Create Release
     needs: build
+    # Only run this job on the main branch and only for our min version of Java.
     if: "github.ref_name == 'main'"
     runs-on: ubuntu-latest
     strategy:
