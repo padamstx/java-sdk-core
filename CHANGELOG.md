@@ -1,3 +1,10 @@
+# [9.18.0](https://github.com/padamstx/java-sdk-core/compare/9.17.4...9.18.0) (2022-11-14)
+
+
+### Features
+
+* add publish workflow to build ([525b208](https://github.com/padamstx/java-sdk-core/commit/525b2089e3d798a979bb36479e86b896c79a3a5b))
+
 ## [9.17.4](https://github.com/IBM/java-sdk-core/compare/9.17.3...9.17.4) (2022-11-11)
 
 
