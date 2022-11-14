@@ -34,8 +34,7 @@ jobs:
         cache: 'maven'
 
     - name: Build & Unit Test w/Maven
-      # temporarily skip tests to speed up builds while working on ghactions
-      run: mvn -B clean package -DskipTests
+      run: mvn -B clean package
 
   create_release:
     needs: build
