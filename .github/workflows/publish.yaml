@@ -28,6 +28,9 @@ jobs:
         server-id: ossrh
         server-username: MAVEN_USERNAME
         server-password: MAVEN_PASSWORD
+        # import GPG key into build agent's local keystore
+        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+        gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
     - name: Set artifact version
       run: |
@@ -52,6 +55,9 @@ jobs:
       env:
         MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       run: |
         echo "Publishing to maven central using username: ${MAVEN_USERNAME}"
-        # mvn -B deploy
+        # build only the "sign" goal for now until we're brave enough to try to deploy to MC :)
+        mvn -B sign
