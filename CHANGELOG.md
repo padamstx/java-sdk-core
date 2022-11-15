@@ -1,3 +1,10 @@
+## [9.18.5](https://github.com/padamstx/java-sdk-core/compare/9.18.4...9.18.5) (2022-11-15)
+
+
+### Bug Fixes
+
+* more tweaks to workflows ([e7eb533](https://github.com/padamstx/java-sdk-core/commit/e7eb5332ff6468e5f16fe5806b54700640f2ae75))
+
 ## [9.18.4](https://github.com/padamstx/java-sdk-core/compare/9.18.3...9.18.4) (2022-11-14)
 
 
