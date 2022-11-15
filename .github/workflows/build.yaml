@@ -23,54 +23,59 @@ jobs:
         java-version: ['8', '11']
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Trigger info
+        run: |
+          echo "Build triggered by event: " ${{ github.event_name }}
+          echo "                 git ref: " ${{ github.ref }}
 
-    - name: Set up Java ${{matrix.java-version}}
-      uses: actions/setup-java@v3 
-      with:
-        java-version: ${{matrix.java-version}}
-        distribution: 'adopt'
-        cache: 'maven'
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Build & Unit Test w/Maven
-      run: mvn -B clean package
+      - name: Set up Java ${{matrix.java-version}}
+        uses: actions/setup-java@v3 
+        with:
+          java-version: ${{matrix.java-version}}
+          distribution: 'adopt'
+          cache: 'maven'
+
+      - name: Build & Unit Test w/Maven
+        run: mvn -B clean package
 
   create_release:
     needs: build
     # Only run this job on the main branch and only for our min version of Java.
-    if: "github.ref_name == 'main'"
+    if: "github.ref_name == 'main' && github.event_name != 'pull_request'"
     runs-on: ubuntu-latest
     strategy:
       matrix:
         java-version: ['8']
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
 
-    - name: Setup node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 14
+      - name: Setup node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
 
-    - name: Set up python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.8
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
 
-    - name: Install semantic-release 
-      run: |
-        npm install -g semantic-release
-        npm install -g @semantic-release/changelog
-        npm install -g @semantic-release/exec
-        npm install -g @semantic-release/git
-        npm install -g @semantic-release/github
-        npm install -g @semantic-release/commit-analyzer
-        pip install --user bump2version
+      - name: Install semantic-release 
+        run: |
+          npm install -g semantic-release
+          npm install -g @semantic-release/changelog
+          npm install -g @semantic-release/exec
+          npm install -g @semantic-release/git
+          npm install -g @semantic-release/github
+          npm install -g @semantic-release/commit-analyzer
+          pip install --user bump2version
 
-    - name: Create & Tag Release
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      run: npx semantic-release
+      - name: Create & Tag Release
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npx semantic-release

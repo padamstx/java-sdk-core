@@ -14,44 +14,48 @@ jobs:
   publish:
     name: Publish Release
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: ['8']
+ 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Java 8
-      uses: actions/setup-java@v3
-      with:
-        java-version: '8'
-        distribution: 'adopt'
-        cache: 'maven'
-        # Configure ~/.m2/settings.xml
-        server-id: ossrh
-        server-username: MAVEN_USERNAME
-        server-password: MAVEN_PASSWORD
-        # Import GPG key into build agent's local keystore
-        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-        gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Set up Java ${{ matrix.java-version }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'adopt'
+          cache: 'maven'
+          # Configure ~/.m2/settings.xml
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          # Import GPG key into build agent's local keystore
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
-    - name: Set artifact version to ${{ github.ref_name }}
-      run: mvn versions:set -DnewVersion=${{ github.ref_name}} -DgenerateBackupPoms=false
+      - name: Set artifact version to ${{ github.ref_name }}
+        run: mvn versions:set -DnewVersion=${{ github.ref_name}} -DgenerateBackupPoms=false
 
-    - name: Publish javadocs to Github Pages
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        GH_REPO_SLUG: ${{ github.repository }}
-        GH_TAG: ${{ github.ref_name}}
-      run: |
-        mvn clean javadoc:javadoc -B
-        build/publishJavadoc-gha.sh
+      - name: Publish javadocs to Github Pages
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_REPO_SLUG: ${{ github.repository }}
+          GH_TAG: ${{ github.ref_name}}
+        run: |
+          mvn clean javadoc:javadoc -B
+          build/publishJavadoc-gha.sh
 
-    - name: Publish artifacts to Maven Central
-      env:
-        MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-        MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-        GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      run: |
-        echo "Publishing to maven central"
-        # build only the "verify" goal for now until we're brave enough to try to deploy to MC :)
-        mvn verify -B -DskipTests -P central
-        ls -al target
+      - name: Publish artifacts to Maven Central
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          echo "Publishing to maven central"
+          # build only the "verify" goal for now until we're brave enough to try to deploy to MC :)
+          mvn verify -B -DskipTests -P central
+          ls -al target
